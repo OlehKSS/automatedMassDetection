@@ -20,6 +20,11 @@
 
   <dependencies>
       <dependency>
+          <groupId>org.bytedeco.javacpp-presets</groupId>
+          <artifactId>opencv-platform</artifactId>
+          <version>3.2.0-1.3</version>
+      </dependency>
+      <dependency>
           <groupId>org.datavec</groupId>
           <artifactId>datavec-api</artifactId>
           <version>0.9.1</version>
