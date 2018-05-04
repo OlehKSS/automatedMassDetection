@@ -3,4 +3,6 @@ target/**
 
 models
 
-./pom.xml
+pom.xml
+automated-mass-detection.iml
+automatedMassDetection.iml
