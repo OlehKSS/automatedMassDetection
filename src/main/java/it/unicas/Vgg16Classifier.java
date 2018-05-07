@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.datavec.image.loader.NativeImageLoader;
+import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.Updater;
 import org.deeplearning4j.nn.conf.distribution.NormalDistribution;
@@ -21,6 +22,7 @@ import org.deeplearning4j.util.ModelSerializer;
 import org.deeplearning4j.nn.modelimport.keras.trainedmodels.TrainedModels;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.VGG16ImagePreProcessor;
 
@@ -67,6 +69,8 @@ public class Vgg16Classifier
     public void transferLearning(int numClasses, int seed) throws UnsupportedKerasConfigurationException, IOException, InvalidKerasConfigurationException
     {
         final String featureExtractionLayer = "fc2";
+        final int trainPerc = 80;
+        final int batchSize = 15;
 
         log.info(vgg16CGraph.summary());
         //Decide on a fine tune configuration to use.
@@ -93,7 +97,34 @@ public class Vgg16Classifier
                         featureExtractionLayer)
                 .build();
         log.info(vgg16Transfer.summary());
+        vgg16CGraph = null;
 
+
+        //Dataset iterators
+        MammogramDataIterator.setup(batchSize,trainPerc);
+        DataSetIterator trainIter = MammogramDataIterator.trainIterator();
+        DataSetIterator testIter = MammogramDataIterator.testIterator();
+
+        Evaluation eval;
+        eval = vgg16Transfer.evaluate(testIter);
+        log.info("Eval stats BEFORE fit.....");
+        log.info(eval.stats() + "\n");
+        testIter.reset();
+
+        int iter = 0;
+        while(trainIter.hasNext()) {
+            vgg16Transfer.fit(trainIter.next());
+            if (iter % 10 == 0) {
+                log.info("Evaluate model at iter "+iter +" ....");
+                eval = vgg16Transfer.evaluate(testIter);
+                log.info(eval.stats());
+                testIter.reset();
+            }
+            iter++;
+        }
+
+        log.info("Model build complete");
+        saveModel(vgg16Transfer);
     }
 
     private static void loadLocalModel(String modelPath) throws java.io.IOException
@@ -136,6 +167,13 @@ public class Vgg16Classifier
         // saving of the model
         boolean saveUpdater = true;// True if you want to train your network more in the future
         File locationToSave = new File("models/vgg16.zip");
+        ModelSerializer.writeModel(net,locationToSave,saveUpdater);
+    }
+
+    private static void saveModel(ComputationGraph net) throws java.io.IOException
+    {
+        boolean saveUpdater = true;// True if you want to train your network more in the future
+        File locationToSave = new File("models/vgg16-masses.zip");
         ModelSerializer.writeModel(net,locationToSave,saveUpdater);
     }
 }
