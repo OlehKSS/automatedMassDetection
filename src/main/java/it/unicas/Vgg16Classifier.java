@@ -157,7 +157,7 @@ public class Vgg16Classifier
         loadLocalModelAsGraph(modelPath);
     }
 
-    private static void downloadModel() throws java.io.IOException
+    public static void downloadModel() throws java.io.IOException
     {
         ZooModel zooModel = new VGG16();
         log.info("Downloading is started.");

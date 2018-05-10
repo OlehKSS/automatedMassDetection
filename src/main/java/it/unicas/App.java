@@ -25,13 +25,15 @@ public class App
     {
         Vgg16Classifier classifier = new Vgg16Classifier();
 
-        try {
-            classifier.transferLearning(2, 12345);
-        }
-        catch(InvalidKerasConfigurationException|UnsupportedKerasConfigurationException e) {
-            log.error("Transfer learning failed.");
-            log.error(e.getMessage());
-        }
+        classifier.downloadModel();
+
+//        try {
+//            classifier.transferLearning(2, 12345);
+//        }
+//        catch(InvalidKerasConfigurationException|UnsupportedKerasConfigurationException e) {
+//            log.error("Transfer learning failed.");
+//            log.error(e.getMessage());
+//        }
     }
 
     public static void testOpencv()
