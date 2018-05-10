@@ -45,7 +45,15 @@ public class Vgg16Classifier
     public Vgg16Classifier() throws java.io.IOException
     {
         if (vgg16CGraph == null) {
-            loadLocalModelAsGraph();
+            try
+            {
+                loadLocalModelAsGraph();
+            }
+            catch (java.io.FileNotFoundException)
+            {
+                downloadModel();
+            }
+
         }
     }
 

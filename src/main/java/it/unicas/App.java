@@ -25,8 +25,6 @@ public class App
     {
         Vgg16Classifier classifier = new Vgg16Classifier();
 
-        classifier.downloadModel();
-
 //        try {
 //            classifier.transferLearning(2, 12345);
 //        }
