@@ -49,7 +49,7 @@ public class Vgg16Classifier
             {
                 loadLocalModelAsGraph();
             }
-            catch (java.io.FileNotFoundException)
+            catch (java.io.FileNotFoundException e)
             {
                 downloadModel();
             }
