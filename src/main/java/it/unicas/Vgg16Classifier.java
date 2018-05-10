@@ -147,13 +147,13 @@ public class Vgg16Classifier
 
     private static void loadLocalModel() throws java.io.IOException
     {
-        String modelPath = "models/vgg16.zip";
+        String modelPath = "./models/vgg16.zip";
         loadLocalModel(modelPath);
     }
 
     private static void loadLocalModelAsGraph() throws java.io.IOException
     {
-        String modelPath = "models/vgg16.zip";
+        String modelPath = "./models/vgg16.zip";
         loadLocalModelAsGraph(modelPath);
     }
 
@@ -166,14 +166,14 @@ public class Vgg16Classifier
 
         // saving of the model
         boolean saveUpdater = true;// True if you want to train your network more in the future
-        File locationToSave = new File("models/vgg16.zip");
+        File locationToSave = new File("./models/vgg16.zip");
         ModelSerializer.writeModel(net,locationToSave,saveUpdater);
     }
 
     private static void saveModel(ComputationGraph net) throws java.io.IOException
     {
         boolean saveUpdater = true;// True if you want to train your network more in the future
-        File locationToSave = new File("models/vgg16-masses.zip");
+        File locationToSave = new File("./models/vgg16-masses.zip");
         ModelSerializer.writeModel(net,locationToSave,saveUpdater);
     }
 }

@@ -26,7 +26,7 @@ import java.util.Random;
 public class MammogramDataIterator {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(MammogramDataIterator.class);
 
-    private static final String DATA_DIR = "/masses";
+    private static final String DATA_DIR = "./masses";
 
     private static final String [] allowedExtensions = BaseImageLoader.ALLOWED_FORMATS;
     private static final Random rng  = new Random(13);
