@@ -16,10 +16,12 @@ import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.zoo.model.VGG16;
 import org.deeplearning4j.zoo.*;
 import org.deeplearning4j.nn.api.Model;
-import org.deeplearning4j.nn.modelimport.keras.UnsupportedKerasConfigurationException;
-import org.deeplearning4j.nn.modelimport.keras.InvalidKerasConfigurationException;
+import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;
+import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
 import org.deeplearning4j.util.ModelSerializer;
-import org.deeplearning4j.nn.modelimport.keras.trainedmodels.TrainedModels;
+import org.deeplearning4j.zoo.util.imagenet.ImageNetLabels;
+//import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
+//import org.deeplearning4j.nn.modelimport.keras.trainedmodels.TrainedModels;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
@@ -30,7 +32,11 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// look for solutions here
+// https://github.com/deeplearning4j/deeplearning4j/blob/master/deeplearning4j-modelimport/src/main/java/org/deeplearning4j/nn/modelimport/keras/KerasModelImport.java
 
+//https://deeplearning4j.org/output
+//https://deeplearning4j.org/doc/
 /**
  * Hello world!
  *
@@ -62,7 +68,7 @@ public class Vgg16Classifier
         // convert 1000 length numeric index of probabilities per label
         // to sorted return top 5 convert to string using helper function VGG16.decodePredictions
         // "predictions" is string of our results
-        String predictions = TrainedModels.VGG16.decodePredictions(output[0]);
+        String predictions = new ImageNetLabels().decodePredictions(output[0]);
         System.out.println(predictions);
     }
 
@@ -77,7 +83,7 @@ public class Vgg16Classifier
         //In cases where there already exists a setting the fine tune setting will
         //  override the setting for all layers that are not "frozen".
         FineTuneConfiguration fineTuneConf = new FineTuneConfiguration.Builder()
-                .learningRate(5e-5)
+                //.learningRate(5e-5)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .updater(Updater.NESTEROVS)
                 .seed(seed)

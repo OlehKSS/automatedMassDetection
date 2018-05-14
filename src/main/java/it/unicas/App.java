@@ -5,8 +5,8 @@ import org.bytedeco.javacpp.opencv_highgui;
 //import org.bytedeco.javacpp.opencv_imgproc;
 import org.bytedeco.javacpp.opencv_imgcodecs;
 
-import org.deeplearning4j.nn.modelimport.keras.UnsupportedKerasConfigurationException;
-import org.deeplearning4j.nn.modelimport.keras.InvalidKerasConfigurationException;
+import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;
+import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
 
 import java.io.File;
 
