@@ -32,7 +32,7 @@
       <dependency>
           <groupId>org.deeplearning4j</groupId>
           <artifactId>deeplearning4j-zoo</artifactId>
-          <version>0.9.1</version>
+          <version>1.0.0-alpha</version>
       </dependency>
       <dependency>
           <groupId>org.bytedeco.javacpp-presets</groupId>
@@ -42,17 +42,17 @@
       <dependency>
           <groupId>org.datavec</groupId>
           <artifactId>datavec-api</artifactId>
-          <version>0.9.1</version>
+          <version>1.0.0-alpha</version>
       </dependency>
       <dependency>
           <groupId>org.nd4j</groupId>
           <artifactId>nd4j-native-platform</artifactId>
-          <version>0.9.1</version>
+          <version>1.0.0-alpha</version>
       </dependency>
       <dependency>
           <groupId>org.deeplearning4j</groupId>
           <artifactId>deeplearning4j-core</artifactId>
-          <version>0.9.1</version>
+          <version>1.0.0-alpha</version>
       </dependency>
       <dependency>
       <groupId>junit</groupId>
