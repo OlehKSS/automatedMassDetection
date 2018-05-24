@@ -1,5 +1,7 @@
 package it.unicas;
 
+//package org.deeplearning4j.examples.convolution;
+
 import org.apache.commons.io.FilenameUtils;
 import org.datavec.api.io.filters.BalancedPathFilter;
 import org.datavec.api.io.labels.ParentPathLabelGenerator;
@@ -91,19 +93,27 @@ public class AlexNetTraining {
          *  - pathFilter = define additional file load filter to limit size and balance batch content
          **/
         ParentPathLabelGenerator labelMaker = new ParentPathLabelGenerator();
-        File mainPath = new File(System.getProperty("user.dir"), "deploy/masses/DataSet01");
+        //File mainPath = new File(System.getProperty("user.dir"), "deploy/masses/DataSet01");
+        // Change to the correct path
+        File mainPath = new File("./data/train/");
         FileSplit fileSplit = new FileSplit(mainPath, NativeImageLoader.ALLOWED_FORMATS, rng);
         int numExamples = toIntExact(fileSplit.length());
         numLabels = fileSplit.getRootDir().listFiles(File::isDirectory).length; //This only works if your root is clean: only label subdirs.
-        BalancedPathFilter pathFilter = new BalancedPathFilter(rng, labelMaker, numExamples, numLabels, batchSize);
+        // 1 will correspond to the pos directory
+        int numPosSamples = fileSplit.getRootDir().listFiles(File::isDirectory)[1].listFiles().length;
+
+        // batchSize - size of the training data from each class to be used, training data size = 2*batchSize
+        // we can use it for finding a balanced data set, and splitting our data.
+        BalancedPathFilter pathFilter = new BalancedPathFilter(rng, labelMaker, numExamples, numLabels, numPosSamples);
 
         /**
          * Data Setup -> train test split
          *  - inputSplit = define train and test split
          **/
+        splitTrainTest = 1;
         InputSplit[] inputSplit = fileSplit.sample(pathFilter, splitTrainTest, 1 - splitTrainTest);
         InputSplit trainData = inputSplit[0];
-        InputSplit testData = inputSplit[1];
+        //InputSplit testData = inputSplit[1];
 
         /**
          * Data Setup -> transformation
@@ -146,47 +156,47 @@ public class AlexNetTraining {
 
         log.info("Train model....");
         // Train without transformations
-        recordReader.initialize(trainData, null);
-        dataIter = new RecordReaderDataSetIterator(recordReader, batchSize, 1, numLabels);
-        scaler.fit(dataIter);
-        dataIter.setPreProcessor(scaler);
-        trainIter = new MultipleEpochsIterator(epochs, dataIter);
-        network.fit(trainIter);
-
-        // Train with transformations
-        for (ImageTransform transform : transforms) {
-            System.out.print("\nTraining on transformation: " + transform.getClass().toString() + "\n\n");
-            recordReader.initialize(trainData, transform);
-            dataIter = new RecordReaderDataSetIterator(recordReader, batchSize, 1, numLabels);
-            scaler.fit(dataIter);
-            dataIter.setPreProcessor(scaler);
-            trainIter = new MultipleEpochsIterator(epochs, dataIter);
-            network.fit(trainIter);
-        }
-
-        log.info("Evaluate model....");
-        recordReader.initialize(testData);
-        dataIter = new RecordReaderDataSetIterator(recordReader, batchSize, 1, numLabels);
-        scaler.fit(dataIter);
-        dataIter.setPreProcessor(scaler);
-        Evaluation eval = network.evaluate(dataIter);
-        log.info(eval.stats(true));
-
-        // Example on how to get predict results with trained model. Result for first example in minibatch is printed
-        dataIter.reset();
-        DataSet testDataSet = dataIter.next();
-        List<String> allClassLabels = recordReader.getLabels();
-        int labelIndex = testDataSet.getLabels().argMax(1).getInt(0);
-        int[] predictedClasses = network.predict(testDataSet.getFeatures());
-        String expectedResult = allClassLabels.get(labelIndex);
-        String modelPrediction = allClassLabels.get(predictedClasses[0]);
-        System.out.print("\nFor a single example that is labeled " + expectedResult + " the model predicted " + modelPrediction + "\n\n");
-
-        if (save) {
-            log.info("Save model....");
-            String basePath = FilenameUtils.concat(System.getProperty("user.dir"), "src/main/resources/");
-            ModelSerializer.writeModel(network, basePath + "model.bin", true);
-        }
+//        recordReader.initialize(trainData, null);
+//        dataIter = new RecordReaderDataSetIterator(recordReader, batchSize, 1, numLabels);
+//        scaler.fit(dataIter);
+//        dataIter.setPreProcessor(scaler);
+//        trainIter = new MultipleEpochsIterator(epochs, dataIter);
+//        network.fit(trainIter);
+//
+//        // Train with transformations
+//        for (ImageTransform transform : transforms) {
+//            System.out.print("\nTraining on transformation: " + transform.getClass().toString() + "\n\n");
+//            recordReader.initialize(trainData, transform);
+//            dataIter = new RecordReaderDataSetIterator(recordReader, batchSize, 1, numLabels);
+//            scaler.fit(dataIter);
+//            dataIter.setPreProcessor(scaler);
+//            trainIter = new MultipleEpochsIterator(epochs, dataIter);
+//            network.fit(trainIter);
+//        }
+//
+//        log.info("Evaluate model....");
+//        recordReader.initialize(testData);
+//        dataIter = new RecordReaderDataSetIterator(recordReader, batchSize, 1, numLabels);
+//        scaler.fit(dataIter);
+//        dataIter.setPreProcessor(scaler);
+//        Evaluation eval = network.evaluate(dataIter);
+//        log.info(eval.stats(true));
+//
+//        // Example on how to get predict results with trained model. Result for first example in minibatch is printed
+//        dataIter.reset();
+//        DataSet testDataSet = dataIter.next();
+//        List<String> allClassLabels = recordReader.getLabels();
+//        int labelIndex = testDataSet.getLabels().argMax(1).getInt(0);
+//        int[] predictedClasses = network.predict(testDataSet.getFeatures());
+//        String expectedResult = allClassLabels.get(labelIndex);
+//        String modelPrediction = allClassLabels.get(predictedClasses[0]);
+//        System.out.print("\nFor a single example that is labeled " + expectedResult + " the model predicted " + modelPrediction + "\n\n");
+//
+//        if (save) {
+//            log.info("Save model....");
+//            String basePath = FilenameUtils.concat(System.getProperty("user.dir"), "src/main/resources/");
+//            ModelSerializer.writeModel(network, basePath + "model.bin", true);
+//        }
         log.info("****************Example finished********************");
     }
 
